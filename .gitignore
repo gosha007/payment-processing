@@ -1,3 +1,6 @@
 .idea/
 payment-processing.iml
+.mvn/
 target/
+.gradle/
+build/
