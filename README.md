@@ -10,16 +10,17 @@ Java 20
 
 You can execute the `main` method in the `lt.paymentprocessing.PaymentProcessingApp` class from your IDE.
 
-Alternatively you can use Maven Wrapper to run command in cmd or terminal:
+Alternatively you can use Gradle Wrapper to run command in `cmd` or `terminal`:
 
 ```
-.\mvnw spring-boot:run
+.\gradlew bootRun
 ```
 
-Or you can `package` project with Maven command `mvn package` and run built `jar` located in `target` directory:
+Or you can `build` project with Gradle command and run built `jar` located in `build\lib` directory:
 
 ```
-java -jar .\target\payment-processing-0.0.1.jar
+.\gradlew build
+java -jar .\build\libs\payment-processing-0.0.1.jar
 ```
 
 ## Accessing application in-memory DB
