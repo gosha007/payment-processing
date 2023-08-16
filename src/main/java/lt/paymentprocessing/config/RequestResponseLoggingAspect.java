@@ -5,14 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import lt.paymentprocessing.service.CountryService;
+import lt.paymentprocessing.client.CountryClient;
 import org.apache.logging.log4j.util.Strings;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,12 +37,13 @@ public class RequestResponseLoggingAspect {
 
     @Autowired
     HttpServletRequest httpServletRequest;
+
     @Autowired
-    CountryService countryService;
+    CountryClient countryClient;
 
     @Before("within(lt.paymentprocessing.controller.*)")
     public void endpointBefore(JoinPoint p) {
-        logRequestURIAndClientInfo();
+        logRequestUriAndClientInfo();
 
         log.info(p.getTarget().getClass().getSimpleName() + " " + p.getSignature().getName() + " START");
 
@@ -72,7 +72,7 @@ public class RequestResponseLoggingAspect {
         log.info(p.getTarget().getClass().getSimpleName() + " " + p.getSignature().getName() + " END");
     }
 
-    public void logRequestURIAndClientInfo() {
+    public void logRequestUriAndClientInfo() {
         // request URI with params
         String queryString = httpServletRequest.getQueryString();
         log.info("Request URI: " + httpServletRequest.getRequestURI()
@@ -80,12 +80,12 @@ public class RequestResponseLoggingAspect {
         );
 
         // client IP and country
-        String ip = getClientIP(httpServletRequest);
-        String country = countryService.resolveClientCountryByIP(ip);
+        String ip = getClientIp(httpServletRequest);
+        String country = countryClient.resolveClientCountryByIp(ip);
         log.info("Client IP={} and country={}", ip, country);
     }
 
-    private String getClientIP(HttpServletRequest request) {
+    private String getClientIp(HttpServletRequest request) {
         for (String header: HEADER_CANDIDATES_FOR_IP) {
             String ipList = request.getHeader(header);
             if (Strings.isNotBlank(ipList) && !"unknown".equalsIgnoreCase(ipList)) {
