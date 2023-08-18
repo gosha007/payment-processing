@@ -5,30 +5,35 @@ import lt.paymentprocessing.model.Payment;
 import lt.paymentprocessing.model.PaymentStatusEnum;
 import lt.paymentprocessing.model.PaymentTypeEnum;
 import lt.paymentprocessing.repository.PaymentRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceImplTest {
 
-    @InjectMocks
-    PaymentServiceImpl paymentService;
+    PaymentService paymentService;
 
     @Mock
-    PaymentRepository paymentRepository;
+    PaymentRepository paymentRepositoryMock;
+
+    @BeforeEach
+    void setUp() {
+        paymentService = new PaymentServiceImpl(new ModelMapper(), paymentRepositoryMock);
+    }
 
     @Test
     void givenPaymentCreatedToday_whenCancelPayment_thenStatusCancelled() {
@@ -39,7 +44,7 @@ class PaymentServiceImplTest {
         paymentCreatedToday.setNewPaymentFields();
         paymentCreatedToday.setCreateDateTime(LocalDateTime.now().minusSeconds(1));
 
-        when(paymentRepository.findById(paymentCreatedToday.getId()))
+        when(paymentRepositoryMock.findById(paymentCreatedToday.getId()))
                 .thenReturn(Optional.of(paymentCreatedToday));
 
         // when
@@ -63,7 +68,7 @@ class PaymentServiceImplTest {
         LocalDateTime rightBeforeMidnightDateTime = LocalDateTime.of(
                 today.getYear(),today.getMonth(),today.getDayOfMonth(), 23,59,59);
 
-        when(paymentRepository.findById(paymentCreatedToday.getId()))
+        when(paymentRepositoryMock.findById(paymentCreatedToday.getId()))
                 .thenReturn(Optional.of(paymentCreatedToday));
 
         try (MockedStatic<LocalDateTime> mockedLocalDateTime = mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
@@ -85,7 +90,7 @@ class PaymentServiceImplTest {
         paymentCreatedYesterday.setNewPaymentFields();
         paymentCreatedYesterday.setCreateDateTime(LocalDateTime.now().minusDays(1));
 
-        when(paymentRepository.findById(paymentCreatedYesterday.getId()))
+        when(paymentRepositoryMock.findById(paymentCreatedYesterday.getId()))
                 .thenReturn(Optional.of(paymentCreatedYesterday));
 
         // when, then
@@ -100,7 +105,7 @@ class PaymentServiceImplTest {
         alreadyCancelledPayment.setCancelledPaymentFields(BigDecimal.ZERO);
         alreadyCancelledPayment.setCreateDateTime(LocalDateTime.now().minusDays(1));
 
-        when(paymentRepository.findById(alreadyCancelledPayment.getId()))
+        when(paymentRepositoryMock.findById(alreadyCancelledPayment.getId()))
                 .thenReturn(Optional.of(alreadyCancelledPayment));
 
         // when, then
@@ -120,7 +125,7 @@ class PaymentServiceImplTest {
 
         when(paymentCreatedNow.getType().getCancellationCoefficient()).thenReturn(new BigDecimal("0.05"));
 
-        when(paymentRepository.findById(paymentCreatedNow.getId()))
+        when(paymentRepositoryMock.findById(paymentCreatedNow.getId()))
                 .thenReturn(Optional.of(paymentCreatedNow));
 
         // when
@@ -147,7 +152,7 @@ class PaymentServiceImplTest {
 
         when(mockedPaymentTypeEnum.getCancellationCoefficient()).thenReturn(new BigDecimal("0.05"));
 
-        when(paymentRepository.findById(paymentCreatedTodayBefore21Hours.getId()))
+        when(paymentRepositoryMock.findById(paymentCreatedTodayBefore21Hours.getId()))
                 .thenReturn(Optional.of(paymentCreatedTodayBefore21Hours));
 
         try (MockedStatic<LocalDateTime> mockedLocalDateTime = mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)) {
