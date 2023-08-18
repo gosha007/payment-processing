@@ -6,7 +6,6 @@ import lt.paymentprocessing.dto.PaymentType1RequestDto;
 import lt.paymentprocessing.service.PaymentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -17,18 +16,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PaymentController.class)
-//@AutoConfigureMockMvc
 class PaymentControllerTest {
 
     @MockBean
-    PaymentService paymentService;
+    PaymentService paymentServiceMock;
 
     @Autowired
     MockMvc mockMvc;
@@ -53,7 +50,7 @@ class PaymentControllerTest {
                 .message("successfully created")
                 .build();
 
-        when(paymentService.savePayment(paymentRequestDto))
+        when(paymentServiceMock.savePayment(paymentRequestDto))
                 .thenReturn(paymentResponseDto);
 
         // when, then
@@ -74,7 +71,7 @@ class PaymentControllerTest {
                 .idList(new ArrayList<>())
                 .build();
 
-        when(paymentService.getAllValidPaymentsBetweenAmount(null, null))
+        when(paymentServiceMock.getAllValidPaymentsBetweenAmount(null, null))
                 .thenReturn(paymentResponseDto);
 
         // when, then
@@ -93,7 +90,7 @@ class PaymentControllerTest {
                 .cancellationFee(new BigDecimal("0.00"))
                 .build();
 
-        when(paymentService.getPaymentCancellationFee(paymentResponseDto.getId()))
+        when(paymentServiceMock.getPaymentCancellationFee(paymentResponseDto.getId()))
                 .thenReturn(paymentResponseDto);
 
         // when, then
@@ -112,7 +109,7 @@ class PaymentControllerTest {
                 .message("successfully cancelled")
                 .build();
 
-        when(paymentService.cancelPayment(paymentResponseDto.getId()))
+        when(paymentServiceMock.cancelPayment(paymentResponseDto.getId()))
                 .thenReturn(paymentResponseDto);
 
         // when, then

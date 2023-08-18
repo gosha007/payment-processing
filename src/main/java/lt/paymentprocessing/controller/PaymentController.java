@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import lt.paymentprocessing.dto.PaymentRequestDto;
 import lt.paymentprocessing.dto.PaymentResponseDto;
 import lt.paymentprocessing.service.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,11 @@ import java.math.BigDecimal;
 @Slf4j
 public class PaymentController {
 
-    @Autowired
     PaymentService paymentService;
+
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 
     @PostMapping("/payments")
     public ResponseEntity<Object> createPayment(@Valid @RequestBody PaymentRequestDto paymentRequestDto) {

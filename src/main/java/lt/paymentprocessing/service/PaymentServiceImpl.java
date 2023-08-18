@@ -1,14 +1,13 @@
 package lt.paymentprocessing.service;
 
+import lt.paymentprocessing.dto.PaymentRequestDto;
 import lt.paymentprocessing.dto.PaymentResponseDto;
 import lt.paymentprocessing.exception.PaymentCancellationException;
 import lt.paymentprocessing.exception.PaymentNotFoundException;
-import lt.paymentprocessing.dto.PaymentRequestDto;
 import lt.paymentprocessing.model.Payment;
 import lt.paymentprocessing.model.PaymentStatusEnum;
 import lt.paymentprocessing.repository.PaymentRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,12 +19,15 @@ import java.util.List;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
-
-    @Autowired
+    
     ModelMapper modelMapper;
 
-    @Autowired
     PaymentRepository paymentRepository;
+
+    public PaymentServiceImpl(ModelMapper modelMapper, PaymentRepository paymentRepository) {
+        this.modelMapper = modelMapper;
+        this.paymentRepository = paymentRepository;
+    }
 
     @Override
     public PaymentResponseDto savePayment(PaymentRequestDto paymentRequestDto) {
