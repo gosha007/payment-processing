@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    image: 'payment-processing-app:latest'
+    build: .
+    container_name: app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/payment_processing_db
+      - SPRING_DATASOURCE_USERNAME=pp_user
+      - SPRING_DATASOURCE_PASSWORD=pp_user_pswd
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    ports:
+      - "6000:5432"
+    environment:
+      - POSTGRES_USER=pp_user
+      - POSTGRES_PASSWORD=pp_user_pswd
+      - POSTGRES_DB=payment_processing_db
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  dbdata:
