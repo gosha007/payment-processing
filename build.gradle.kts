@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+    implementation("org.postgresql:postgresql")
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation(platform("org.zalando:logbook-bom:3.3.0"))
     implementation("org.zalando:logbook-spring-boot-starter")
