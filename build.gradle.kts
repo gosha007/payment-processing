@@ -10,7 +10,7 @@ version = "0.0.1"
 description = "Payment Processing"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_20
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
